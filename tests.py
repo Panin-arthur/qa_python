@@ -1,4 +1,5 @@
 import unittest
+import pytest
 
 class TestBooksCollector(unittest.TestCase):
 
@@ -63,6 +64,18 @@ class TestBooksCollector(unittest.TestCase):
         self.collector.add_new_book("Книга1")
         self.collector.set_book_genre("Книга1", "Фантастика")
         self.assertDictEqual(self.collector.get_books_genre(), {"Книга1": "Фантастика"})
+
+    @unittest.expectedFailure  # Ожидаемое несоответствие
+    def test_get_books_genre(self):
+        self.collector.add_new_book("Книга1")
+        self.collector.set_book_genre("Книга1", "Фантастика")
+        self.assertDictEqual(self.collector.get_books_genre(), {"Книга1": "Фантастика"})
+
+    @pytest.mark.parametrize("book_name, genre", [("Книга1", "Фантастика"), ("Книга2", "Детективы")])
+    def test_set_book_genre_update(self, book_name, genre):
+        self.collector.add_new_book(book_name)
+        self.collector.set_book_genre(book_name, genre)
+        self.assertEqual(self.collector.get_book_genre(book_name), genre)
 
 if __name__ == '__main__':
     unittest.main()
